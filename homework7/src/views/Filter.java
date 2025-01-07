@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 
 public class Filter {
 
-    private ActionType type;
+    private FilterType type;
     private LocalDateTime value;
 
-    public Filter(ActionType type, LocalDateTime value) {
+    public Filter(FilterType type, LocalDateTime value) {
         this.type = type;
         this.value = value;
     }
 
-    public ActionType getType() {
+    public FilterType getType() {
         return type;
     }
 

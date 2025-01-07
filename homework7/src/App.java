@@ -9,7 +9,8 @@ public class App {
 
         var display = new Display(System.in, System.out);
         var repository = new NotebookRepository("notebook.dat");
-        var filters = new ArrayList<Filter>();
+        // var filters = new ArrayList<Filter>();
+        Filter filter = null;
 
         var notebook = repository.load();
 
@@ -20,29 +21,40 @@ public class App {
         // filling filters
         var continueFiltering = true;
         while (continueFiltering) {
-            display.displayLaptopsAndFilters(notebook.getNotes(), filters);
+
+            display.displayNotebook(notebook, filter);
 
             // continueFiltering = display.getConfirmationFromDisplay();
             // if (continueFiltering) {
             var actionType = display.getActionFromDisplay();
             switch (actionType) {
                 case ADD_NEW:
+                    var note = display.getNewNoteFromDisplay();
+                    notebook.add(note);
                     break;
                 case FILTER_BY_DAY:
+                    var filterDayTime = display.getDateTimeFromDisplay();
+                    filter = new Filter(FilterType.FILTER_BY_DAY, filterDayTime);
                     break;
                 case FILTER_BY_WEEK:
+                    var filterWeekTime = display.getDateTimeFromDisplay();
+                    filter = new Filter(FilterType.FILTER_BY_WEEK, filterWeekTime);
                     break;
                 case SAVE:
+                    display.displaySavedSuccessfully();
+                    repository.save(notebook);
                     break;
                 case LOAD:
+                    display.displayLoadSuccessfully();
+                    notebook = repository.load();
+                    filter = null;
                     break;
-
             }
             // }
         }
 
-        display.displayLaptopsAndFilters(notebook.getNotes(), filters);
-        display.displayFilteredLaptops(notebook.getNotes());
+        // display.displayNotes(notebook.getNotes(), filters);
+        // display.displayFilteredLaptops(notebook.getNotes());
 
         display.displayExitMessage();
     }

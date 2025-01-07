@@ -10,8 +10,6 @@ public class Note implements Serializable {
     private LocalDateTime dateTime;
     private String description;
 
-    String str = "1986-04-08 12:30";
-
     private LocalDateTime parce(String str) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dateTime = LocalDateTime.parse(str, formatter);

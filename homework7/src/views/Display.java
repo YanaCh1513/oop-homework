@@ -1,5 +1,6 @@
 package views;
 
+import java.util.concurrent.TimeUnit;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import models.*;
 import java.util.*;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.time.LocalDateTime;
 
 // Все методы для работы с консолью.
 public class Display {
@@ -43,13 +45,30 @@ public class Display {
         displayNotes(notes);
     }
 
-    public void displayLaptopsAndFilters(List<Note> notes, List<Filter> filters) {
+    public void displayNotebook(Notebook notebook, Filter filter) {
         // очистить экран
         clearScreen();
-        // вывод ноутбуков
-        out.println("Все доступные записи блокнота:");
-        displayNotes(notes);
+
+        if (filter == null) {
+            // вывод ноутбуков
+            out.println("Все доступные записи блокнота:");
+            displayNotes(notebook.getNotes());
+            out.println();
+            return;
+        }
+
+        switch (filter.getType()) {
+            case FILTER_BY_DAY:
+                out.println("Записи блокнота за день:");
+                displayNotes(notebook.getNotesForDay(filter.getValue()));
+                break;
+            case FILTER_BY_WEEK:
+                out.println("Записи блокнота за неделю:");
+                displayNotes(notebook.getNotesForWeek(filter.getValue()));
+                break;
+        }
         out.println();
+
         // вывод фильтров
         // displayFilters(filters);
     }
@@ -109,6 +128,56 @@ public class Display {
         for (ActionType filterType : ActionType.values()) {
             out.println(i + " - " + ActionType.getDescription(filterType));
             i++;
+        }
+    }
+
+    public LocalDateTime getDateTimeFromDisplay() {
+        var str = getStringDataFromDisplay();
+        return (new Note(str, "")).getDateTime();
+    }
+
+    public String getStringDataFromDisplay() {
+        out.println();
+        out.println("Введите дату в фотмате ГГ:MM:DD HH:mm");
+        return scanner.nextLine();
+    }
+
+    public Note getNewNoteFromDisplay() {
+        out.println();
+
+        out.println("Добавление новой записи");
+        out.println("------------------------------");
+
+        var date = getStringDataFromDisplay();
+
+        out.println("Введите событие");
+        var disctiption = scanner.nextLine();
+
+        // scanner.nextLine(); // очистить буфер
+        out.println();
+
+        return new Note(date, disctiption);
+    }
+
+    public void displayLoadSuccessfully() {
+        out.println("Загружено...");
+        try {
+            Thread.sleep(1000);
+            // TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void displaySavedSuccessfully() {
+        // Thread.sleep(1000);
+        out.println("Сохранено...");
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
