@@ -1,63 +1,38 @@
-import java.util.ArrayList;
-
-import models.*;
 import views.*;
 import services.*;
+import models.*;
+import presenters.IPresenter;
+import presenters.Presenter;
 
 public class App {
     public static void main(String[] args) throws Exception {
 
-        var display = new Display(System.in, System.out);
-        var repository = new NotebookRepository("notebook.dat");
-        // var filters = new ArrayList<Filter>();
-        Filter filter = null;
+        IDisplay notebookView = new Display(System.in, System.out);
+        IRepository<INotebook> repository = new FileRepository<INotebook>("notebook.dat");
+        IPresenter presenter = new Presenter(notebookView, repository);
 
-        var notebook = repository.load();
+        while (true) {
 
-        // notebook.add(new Note("2024-12-11 13:34", "Турнир по НТ"));
-        // notebook.add(new Note("2024-12-12 12:34", "Кормление пингвина"));
-        // repository.save(notebook);
+            presenter.display();
 
-        // filling filters
-        var continueFiltering = true;
-        while (continueFiltering) {
-
-            display.displayNotebook(notebook);
-
-            if (filter != null)
-                display.displayFilteredNotebook(notebook, filter);
-            // continueFiltering = display.getConfirmationFromDisplay();
-            // if (continueFiltering) {
-            var actionType = display.getActionFromDisplay();
-            switch (actionType) {
+            var action = presenter.getAction();
+            switch (action) {
                 case ADD_NEW:
-                    var note = display.getNewNoteFromDisplay();
-                    notebook.add(note);
+                    presenter.addNote();
                     break;
                 case FILTER_BY_DAY:
-                    var filterDayTime = display.getDateTimeFromDisplay();
-                    filter = new Filter(FilterType.FILTER_BY_DAY, filterDayTime);
+                    presenter.filteredByDay();
                     break;
                 case FILTER_BY_WEEK:
-                    var filterWeekTime = display.getDateTimeFromDisplay();
-                    filter = new Filter(FilterType.FILTER_BY_WEEK, filterWeekTime);
+                    presenter.filteredByWeek();
                     break;
                 case SAVE:
-                    display.displaySavedSuccessfully();
-                    repository.save(notebook);
+                    presenter.save();
                     break;
                 case LOAD:
-                    display.displayLoadSuccessfully();
-                    notebook = repository.load();
-                    filter = null;
+                    presenter.load();
                     break;
             }
-            // }
         }
-
-        // display.displayNotes(notebook.getNotes(), filters);
-        // display.displayFilteredLaptops(notebook.getNotes());
-
-        display.displayExitMessage();
     }
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Notebook implements Serializable {
+public class Notebook implements INotebook, Serializable {
     private List<Note> notes = new ArrayList<>();
 
     private static final long serialVersionUID = 1L;

@@ -1,10 +1,7 @@
 package views;
 
 import java.util.concurrent.TimeUnit;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.ArrayList;
-
 import models.*;
 
 import java.util.*;
@@ -13,7 +10,7 @@ import java.io.PrintStream;
 import java.time.LocalDateTime;
 
 // Все методы для работы с консолью.
-public class Display {
+public class Display implements IDisplay {
     public Display(InputStream in, PrintStream out) {
         this.scanner = new Scanner(System.in);
         this.out = out;
@@ -24,12 +21,14 @@ public class Display {
 
     // просто добавляю в конец слово выход, чтобы было понятно, что программа
     // отработала
+    @Override
     public void displayExitMessage() {
         out.println();
         out.println();
         out.println("Выход");
     }
 
+    @Override
     public Boolean getConfirmationFromDisplay() {
         // подтверждение добавить еще один фильтр
         out.println();
@@ -39,7 +38,8 @@ public class Display {
         return confirmation.equalsIgnoreCase("y");
     }
 
-    public void displayFilteredNotebook(Notebook notebook, Filter filter) {
+    @Override
+    public void displayFilteredNotebook(INotebook notebook, Filter filter) {
         out.println();
         switch (filter.getType()) {
             case FILTER_BY_DAY:
@@ -53,41 +53,17 @@ public class Display {
         }
     }
 
-    public void displayNotebook(Notebook notebook) {
+    @Override
+    public void displayNotebook(INotebook notebook) {
         // очистить экран
         clearScreen();
 
-        // вывод ноутбуков
+        // вывод записей
         out.println("Все доступные записи блокнота:");
         displayNotes(notebook.getNotes());
+
         out.println();
-
-        // вывод фильтров
-        // displayFilters(filters);
     }
-
-    // private void displayFilters(ArrayList<Filter> filters) {
-    // var i = 1;
-
-    // out.println("Фильтры:");
-    // out.println("--------");
-
-    // if (filters == null || filters.size() == 0) {
-    // out.println("<пусто>");
-
-    // }
-
-    // for (var filter : filters) {
-    // //
-    // https://javarush.com/en/groups/posts/en.1412.formatting-number-output-in-java
-    // out.printf(
-    // "%d. %-5s %-5s \n",
-    // i,
-    // String.valueOf(filter.getType()),
-    // filter.getValue());
-    // i++;
-    // }
-    // }
 
     private void displayNotes(List<Note> notes) {
         var i = 1;
@@ -116,6 +92,7 @@ public class Display {
         }
     }
 
+    @Override
     public void displayFilterTypes() {
         var i = 1;
         for (ActionType filterType : ActionType.values()) {
@@ -124,16 +101,19 @@ public class Display {
         }
     }
 
+    @Override
     public LocalDateTime getDateTimeFromDisplay() {
         var str = getStringDataFromDisplay();
         return (new Note(str, "")).getDateTime();
     }
 
+    @Override
     public String getStringDataFromDisplay() {
         out.println("Введите дату в фотмате YY-MM-DD HH:mm");
         return scanner.nextLine();
     }
 
+    @Override
     public Note getNewNoteFromDisplay() {
         out.println();
 
@@ -151,6 +131,7 @@ public class Display {
         return new Note(date, disctiption);
     }
 
+    @Override
     public void displayLoadSuccessfully() {
         out.println("Загружено...");
         try {
@@ -162,6 +143,7 @@ public class Display {
         }
     }
 
+    @Override
     public void displaySavedSuccessfully() {
         // Thread.sleep(1000);
         out.println("Сохранено...");
@@ -173,6 +155,7 @@ public class Display {
         }
     }
 
+    @Override
     public ActionType getActionFromDisplay() {
         out.println();
         out.println("Работа с блокнотом");
@@ -190,6 +173,7 @@ public class Display {
         return criteriaType;
     }
 
+    @Override
     public void clearScreen() {
         out.print("\033[H\033[2J");
         out.flush();
