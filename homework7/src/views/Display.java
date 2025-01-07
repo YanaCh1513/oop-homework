@@ -39,34 +39,27 @@ public class Display {
         return confirmation.equalsIgnoreCase("y");
     }
 
-    public void displayFilteredLaptops(List<Note> notes) {
+    public void displayFilteredNotebook(Notebook notebook, Filter filter) {
         out.println();
-        out.println("Записи подходящие под фильтры:");
-        displayNotes(notes);
-    }
-
-    public void displayNotebook(Notebook notebook, Filter filter) {
-        // очистить экран
-        clearScreen();
-
-        if (filter == null) {
-            // вывод ноутбуков
-            out.println("Все доступные записи блокнота:");
-            displayNotes(notebook.getNotes());
-            out.println();
-            return;
-        }
-
         switch (filter.getType()) {
             case FILTER_BY_DAY:
-                out.println("Записи блокнота за день:");
+                out.println("Записи блокнота за время " + filter.getValue() + ":");
                 displayNotes(notebook.getNotesForDay(filter.getValue()));
                 break;
             case FILTER_BY_WEEK:
-                out.println("Записи блокнота за неделю:");
+                out.println("Записи блокнота за неделю начиная с " + filter.getValue() + ":");
                 displayNotes(notebook.getNotesForWeek(filter.getValue()));
                 break;
         }
+    }
+
+    public void displayNotebook(Notebook notebook) {
+        // очистить экран
+        clearScreen();
+
+        // вывод ноутбуков
+        out.println("Все доступные записи блокнота:");
+        displayNotes(notebook.getNotes());
         out.println();
 
         // вывод фильтров
@@ -137,8 +130,7 @@ public class Display {
     }
 
     public String getStringDataFromDisplay() {
-        out.println();
-        out.println("Введите дату в фотмате ГГ:MM:DD HH:mm");
+        out.println("Введите дату в фотмате YY-MM-DD HH:mm");
         return scanner.nextLine();
     }
 

@@ -22,8 +22,10 @@ public class App {
         var continueFiltering = true;
         while (continueFiltering) {
 
-            display.displayNotebook(notebook, filter);
+            display.displayNotebook(notebook);
 
+            if (filter != null)
+                display.displayFilteredNotebook(notebook, filter);
             // continueFiltering = display.getConfirmationFromDisplay();
             // if (continueFiltering) {
             var actionType = display.getActionFromDisplay();
