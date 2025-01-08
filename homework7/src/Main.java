@@ -4,7 +4,7 @@ import models.*;
 import presenters.IPresenter;
 import presenters.Presenter;
 
-public class App {
+public class Main {
     public static void main(String[] args) throws Exception {
 
         IDisplay notebookView = new Display(System.in, System.out);
